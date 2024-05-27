@@ -10,7 +10,7 @@ const v5 = process.env.v5;
 (async () => {
     try {
         const browser = await puppeteer.launch({
-            headless: false,
+            headless: true,
             defaultViewport: false,
         });
 
