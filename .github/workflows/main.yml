@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  compiling-news-live-data:
+  log-time-data:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
