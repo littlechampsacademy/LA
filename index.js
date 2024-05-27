@@ -91,16 +91,26 @@ if (v5) {
             page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN"),
         ]);
 
+        await page.waitForNetworkIdle({
+            idleTime: 0,
+            timeout: 0,
+        });
+
         console.log("btn found");
 
         const button1 = await page.$("#DASHBOARD_CLOCK_IN_BTN");
 
         if (button1) {
-            console.log("CLOCK_IN_BTN found");
-            await page.click("#DASHBOARD_CLOCK_IN_BTN");
+            console.log('CLOCK_IN_BTN_FOUND');
+            await page.evaluate(() => {
+                document.querySelector("#DASHBOARD_CLOCK_IN_BTN").click();
+            });
+
         } else {
-            console.log("CLOCK_OUT_BTN found");
-            await page.click("#DASHBOARD_CLOCK_OUT_BTN");
+            console.log('CLOCK_OUT_BTN_FOUND');
+            await page.evaluate(() => {
+                document.querySelector("#DASHBOARD_CLOCK_OUT_BTN").click();
+            });
         }
 
         await browser.close();
