@@ -86,15 +86,15 @@ if (v5) {
         // await page.waitForNavigation();
         // console.log("waitForNavigation");
 
-        await Promise.race([
-            page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN"),
-            page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN"),
-        ]);
-
         await page.waitForNetworkIdle({
             idleTime: 0,
             timeout: 0,
         });
+
+        await Promise.race([
+            page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN"),
+            page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN"),
+        ]);
 
         console.log("btn found");
 
