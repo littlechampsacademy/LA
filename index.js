@@ -62,7 +62,9 @@ console.log("v5 length is", v5.length);
     console.log("Navigation completed");
 
     await page.waitForNetworkIdle({ idleTime: 5000, timeout: 60000 });
-
+    
+    console.log(await page.content());
+    
     const btnSelector = await Promise.race([
       page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN", { timeout: 10000 }),
       page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN", { timeout: 10000 }),
