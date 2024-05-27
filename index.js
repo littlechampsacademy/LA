@@ -50,8 +50,8 @@ const v5 = process.env.v5;
     );
     console.log("login clicked");
 
-    await page.waitForNavigation();
-    console.log("waitForNavigation");
+    // await page.waitForNavigation();
+    // console.log("waitForNavigation");
 
     await Promise.race([
       page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN"),
