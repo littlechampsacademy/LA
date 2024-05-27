@@ -91,7 +91,7 @@ if (v5) {
             timeout: 0,
         });
 
-        await Promise.race([
+        const abc = await Promise.race([
             page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN"),
             page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN"),
         ]);
