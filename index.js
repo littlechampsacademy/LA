@@ -8,53 +8,70 @@ const v4 = process.env.v4;
 const v5 = process.env.v5;
 
 (async () => {
-    try {
-        const browser = await puppeteer.launch({
-            headless: true,
-            defaultViewport: false,
-        });
+  try {
+    const browser = await puppeteer.launch({
+      headless: true,
+      defaultViewport: false,
+    });
 
-        let url = v1;
+    let url = v1;
 
-        const context = browser.defaultBrowserContext();
-        await context.overridePermissions(v1, ["geolocation"]);
+    console.log("url set");
 
-        const page = await browser.newPage();
+    const context = browser.defaultBrowserContext();
+    await context.overridePermissions(v1, ["geolocation"]);
 
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36');
+    console.log("location permission given");
 
-        await page.setGeolocation({
-            latitude: parseFloat(v4),
-            longitude: parseFloat(v5),
-        });
+    const page = await browser.newPage();
 
-        await page.goto(url, { waitUntil: "load" });
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"
+    );
+    console.log("useragent set");
 
-        await page.type("#input-25", v2, { delay: 100 });
-        await page.type("#password", v3, { delay: 100 });
-        await page.click(
-            "#core-view > div.container.container--fluid > div:nth-child(2) > div > div > div > button"
-        );
+    await page.setGeolocation({
+      latitude: parseFloat(v4),
+      longitude: parseFloat(v5),
+    });
 
-        await page.waitForNavigation();
+    console.log("location set");
 
-        const clickInOut = await Promise.race([
-            page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN"),
-            page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN"),
-        ]);
+    await page.goto(url, { timeout: 0, waitUntil: "load" });
+    console.log("page opened");
 
-        const button1 = await page.$("#DASHBOARD_CLOCK_IN_BTN");
+    await page.type("#input-25", v2, { delay: 100 });
+    await page.type("#password", v3, { delay: 100 });
 
-        if (button1) {
-            await page.click("#DASHBOARD_CLOCK_IN_BTN");
-        } else {
-            await page.click("#DASHBOARD_CLOCK_OUT_BTN");
-        }
+    console.log("email pass set");
 
+    await page.click(
+      "#core-view > div.container.container--fluid > div:nth-child(2) > div > div > div > button"
+    );
+    console.log("login clicked");
 
+    await page.waitForNavigation();
+    console.log("waitForNavigation");
 
-        // await browser.close()
-    } catch (error) {
-        console.log("something went wrong ", error);
+    await Promise.race([
+      page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN"),
+      page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN"),
+    ]);
+
+    console.log("btn found");
+
+    const button1 = await page.$("#DASHBOARD_CLOCK_IN_BTN");
+
+    if (button1) {
+      console.log("CLOCK_IN_BTN found");
+      await page.click("#DASHBOARD_CLOCK_IN_BTN");
+    } else {
+      console.log("CLOCK_OUT_BTN found");
+      await page.click("#DASHBOARD_CLOCK_OUT_BTN");
     }
+
+    await browser.close();
+  } catch (error) {
+    console.log("something went wrong ", error);
+  }
 })();
