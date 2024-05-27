@@ -91,10 +91,10 @@ if (v5) {
             timeout: 0,
         });
 
-        const abc = await Promise.race([
-            page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN"),
-            page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN"),
-        ]);
+        // const abc = await Promise.race([
+        //     page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN"),
+        //     page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN"),
+        // ]);
 
         console.log("btn found");
 
