@@ -78,12 +78,13 @@ if (v5) {
 
         console.log("email pass set");
 
-        await page.click(
-            "#core-view > div.container.container--fluid > div:nth-child(2) > div > div > div > button"
-        );
+        await page.evaluate(() => {
+            document.querySelector("#core-view > div.container.container--fluid > div:nth-child(2) > div > div > div > button").click();
+        });
+
         console.log("login clicked");
 
-        console.log(await page.content());
+        // console.log(await page.content());
 
         // await page.waitForNavigation();
         // console.log("waitForNavigation");
@@ -95,10 +96,10 @@ if (v5) {
         console.log("waitForNetworkIdle");
         console.log(await page.content());
 
-        await Promise.race([
-            page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN"),
-            page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN"),
-        ]);
+        // await Promise.race([
+        //     page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN"),
+        //     page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN"),
+        // ]);
 
         console.log("btn found");
 
