@@ -7,82 +7,111 @@ const v3 = process.env.v3;
 const v4 = process.env.v4;
 const v5 = process.env.v5;
 
+
 // Validate environment variables
-if (!v1 || !v2 || !v3 || !v4 || !v5) {
-  console.error("Missing required environment variables");
-  process.exit(1);
+if (v1) {
+    console.log("v1 length is", v1.length);
+} else {
+    console.log("Value for v1 is not present");
 }
 
-console.log("v1 length is", v1.length);
-console.log("v2 length is", v2.length);
-console.log("v3 length is", v3.length);
-console.log("v4 length is", v4.length);
-console.log("v5 length is", v5.length);
+if (v2) {
+    console.log("v2 length is", v2.length);
+} else {
+    console.log("Value for v2 is not present");
+}
+
+if (v3) {
+    console.log("v3 length is", v3.length);
+} else {
+    console.log("Value for v3 is not present");
+}
+
+if (v4) {
+    console.log("v4 length is", v4.length);
+} else {
+    console.log("Value for v4 is not present");
+}
+
+if (v5) {
+    console.log("v5 length is", v5.length);
+} else {
+    console.log("Value for v5 is not present");
+}
+
 
 (async () => {
-  let browser;
-  try {
-    browser = await puppeteer.launch({
-      headless: true,
-      defaultViewport: false,
-    });
+    try {
+        const browser = await puppeteer.launch({
+            headless: true,
+            defaultViewport: false,
+        });
 
-    const url = v1;
-    console.log("URL set");
+        let url = v1;
 
-    const context = browser.defaultBrowserContext();
-    await context.overridePermissions(v1, ["geolocation"]);
-    console.log("Location permission given");
+        console.log("url set");
 
-    const page = await browser.newPage();
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"
-    );
-    console.log("User agent set");
+        const context = browser.defaultBrowserContext();
+        await context.overridePermissions(v1, ["geolocation"]);
 
-    await page.setGeolocation({
-      latitude: parseFloat(v4),
-      longitude: parseFloat(v5),
-    });
-    console.log("Location set");
+        console.log("location permission given");
 
-    await page.goto(url, { timeout: 60000, waitUntil: "networkidle0" });
-    console.log("Page opened");
+        const page = await browser.newPage();
 
-    await page.type("#input-25", v2, { delay: 100 });
-    await page.type("#password", v3, { delay: 100 });
-    console.log("Email and password set");
+        await page.setUserAgent(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"
+        );
+        console.log("useragent set");
 
-    await page.click(
-      "#core-view > div.container.container--fluid > div:nth-child(2) > div > div > div > button"
-    );
-    console.log("Login clicked");
+        await page.setGeolocation({
+            latitude: parseFloat(v4),
+            longitude: parseFloat(v5),
+        });
 
-    await page.waitForNavigation({ timeout: 60000 });
-    console.log("Navigation completed");
+        console.log("location set");
 
-    await page.waitForNetworkIdle({ idleTime: 5000, timeout: 60000 });
-    
-    console.log(await page.content());
-    
-    const btnSelector = await Promise.race([
-      page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN", { timeout: 10000 }),
-      page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN", { timeout: 10000 }),
-    ]);
+        await page.goto(url, { timeout: 0, waitUntil: "load" });
+        console.log("page opened");
 
-    if (btnSelector) {
-      console.log("Button found");
-      await btnSelector.click();
-    } else {
-      throw new Error("Clock in/out button not found");
+        await page.type("#input-25", v2, { delay: 100 });
+        await page.type("#password", v3, { delay: 100 });
+
+        console.log("email pass set");
+
+        await page.click(
+            "#core-view > div.container.container--fluid > div:nth-child(2) > div > div > div > button"
+        );
+        console.log("login clicked");
+
+        await page.waitForNavigation();
+        console.log("waitForNavigation");
+
+        await page.waitForNetworkIdle({
+            idleTime: 0,
+            timeout: 0,
+        });
+
+        console.log(await page.content());
+
+        await Promise.race([
+            page.waitForSelector("#DASHBOARD_CLOCK_IN_BTN"),
+            page.waitForSelector("#DASHBOARD_CLOCK_OUT_BTN"),
+        ]);
+
+        console.log("btn found");
+
+        await page.evaluate(() => {
+            if (document.querySelector("#DASHBOARD_CLOCK_IN_BTN")) {
+                console.log('CLOCK_IN_BTN_FOUND');
+                document.querySelector("#DASHBOARD_CLOCK_IN_BTN").click();
+            } else {
+                console.log('CLOCK_OUT_BTN_FOUND');
+                document.querySelector("#DASHBOARD_CLOCK_OUT_BTN").click();
+            }
+        });
+        console.log('closing browser');
+        // await browser.close();
+    } catch (error) {
+        console.log("something went wrong ", error);
     }
-
-    console.log("Closing browser");
-  } catch (error) {
-    console.error("An error occurred:", error);
-  } finally {
-    if (browser) {
-      await browser.close();
-    }
-  }
 })();
