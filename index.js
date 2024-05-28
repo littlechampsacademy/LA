@@ -83,14 +83,16 @@ if (v5) {
         );
         console.log("login clicked");
 
-        await page.waitForNavigation();
-        console.log("waitForNavigation");
+        console.log(await page.content());
+
+        // await page.waitForNavigation();
+        // console.log("waitForNavigation");
 
         await page.waitForNetworkIdle({
             idleTime: 0,
             timeout: 0,
         });
-
+        console.log("waitForNetworkIdle");
         console.log(await page.content());
 
         await Promise.race([
